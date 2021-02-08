@@ -13,8 +13,10 @@ const readline = require('readline').createInterface({
 
 console.log( "I am Dante!" );
 
+
 console.log( "1. Activator" );
 console.log( "2. EmailBuilder" );
+
 
 /*
 readline.question(`What you want?`, name => {
@@ -29,7 +31,8 @@ var questions = [
     type: 'autosubmit',
     name: 'name',
     message: "What's your number?",
-    autoSubmit: input => input.length === 1
+    autoSubmit: input => input.length === 1,
+    // choices: ['1. Activator', '2. EmailBuilder', 'Small'],
   }
 ]
 
@@ -37,17 +40,3 @@ inquirer.prompt(questions).then(answers => {
   console.log(`Hi ${answers['name']}!`)
   activator.activator();
 })
-
-/*
-exec("calc", (error, stdout, stderr) => {
-    if (error) {
-        console.log(`error: ${error.message}`);
-        return;
-    }
-    if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return;
-    }
-    console.log(`stdout: ${stdout}`);
-});
-*/
