@@ -1,0 +1,18 @@
+{
+  "name": "dante",
+  "version": "1.0.0",
+  "description": "Developers Always Need Tools Everywhere",
+  "main": "bin/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "bin": {
+    "dante": "./bin/index.js"
+  },
+  "dependencies": {
+    "inquirer": "^7.3.3",
+    "inquirer-autosubmit-prompt": "^0.2.0"
+  }
+}
