@@ -3,6 +3,7 @@
 const inquirer = require('inquirer')
 const { exec } = require("child_process");
 const activator = require('./activator')
+const random = require('./random')
 
 inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
 
@@ -16,6 +17,7 @@ console.log( "I am Dante!" );
 
 console.log( "1. Activator" );
 console.log( "2. EmailBuilder" );
+console.log( "3. Random" );
 
 
 /*
@@ -37,6 +39,20 @@ var questions = [
 ]
 
 inquirer.prompt(questions).then(answers => {
+  var ans = answers['name'];
+
   console.log(`Hi ${answers['name']}!`)
-  activator.activator();
+  switch(ans) {
+    case "1":
+      activator.activator();
+      break;
+    case "3":
+        random.random();
+        break;
+    default:
+      console.log('say what?');
+      // code block
+  }
+
+
 })
