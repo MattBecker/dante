@@ -7,7 +7,7 @@ inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
 exports.random = function() {
   console.log("I am random");
   console.log("1: IIS Reset");
-  console.log("0: Go back");
+  //console.log("0: Go back");
 
   var questions = [{
     type: 'autosubmit',

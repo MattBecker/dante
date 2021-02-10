@@ -1,58 +1,41 @@
 #!/usr/bin/env node
 
 const inquirer = require('inquirer')
-const { exec } = require("child_process");
-const activator = require('./activator')
-const random = require('./random')
+const process = require("child_process");
+const activator = require('./activator');
+const random = require('./random');
+const chalk = require('chalk');
 
 inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
 
-const readline = require('readline').createInterface({
-  input: process.stdin,
-  output: process.stdout
-})
+// process.spawnSync('Clear-Host');
 
-console.log( "I am Dante!" );
+console.log(chalk.bgGreen("-".repeat(30) + "I am Dante" + "-".repeat(30)));
+console.log("1. Activator");
+console.log("2. EmailBuilder");
+console.log("3. Random");
+//console.log("0. Exit");
 
-
-console.log( "1. Activator" );
-console.log( "2. EmailBuilder" );
-console.log( "3. Random" );
-
-
-/*
-readline.question(`What you want?`, name => {
-  console.log(`Hi ${name}!`)
-  readline.close()
-})
-*/
-
-
-var questions = [
-  {
-    type: 'autosubmit',
-    name: 'name',
-    message: "What's your number?",
-    autoSubmit: input => input.length === 1,
-    // choices: ['1. Activator', '2. EmailBuilder', 'Small'],
-  }
-]
+var questions = [{
+  type: 'autosubmit',
+  name: 'num',
+  message: "?",
+  autoSubmit: input => input.length === 1
+}]
 
 inquirer.prompt(questions).then(answers => {
-  var ans = answers['name'];
-
-  console.log(`Hi ${answers['name']}!`)
-  switch(ans) {
+  var ans = answers['num'];
+  switch (ans) {
+    case "0":
+      console.log(chalk.gray('thanks for playing'));
+      break;
     case "1":
       activator.activator();
       break;
     case "3":
-        random.random();
-        break;
+      random.random();
+      break;
     default:
       console.log('say what?');
-      // code block
   }
-
-
 })
