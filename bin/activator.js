@@ -1,8 +1,8 @@
 const inquirer = require('inquirer')
-//const { exec } = require("child_process");
 const { exec, spawn } = require("child_process");
 const request = require('request');
 const fs = require('fs');
+var settings = require('user-settings').file('.dante');
 
 inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
 
@@ -12,7 +12,9 @@ exports.activator = function() {
   console.log( "2: Run ngrok");
   console.log( "3: Create Event Grid Webhooks");
   console.log( "4: FixLocalPsFile");
-  //console.log( "0: Go back" );
+
+  var activatorRoot = settings.get('activatorRoot');
+  var initials = settings.get('initials');
 
   var questions = [
     {
@@ -28,8 +30,8 @@ exports.activator = function() {
 
     switch(ans) {
       case "1":
-        const app1 = "C:\\DevFiles\\Code\\Equity\\Local\\Database\\Equity.DemoData\\bin\\Debug\\Equity.DemoData.exe";
-        const args1 = ['-s', '-p', '-d', '-f=C:\\devfiles\\code\\equity\\local\\DemoData\\', '-n=local'];
+        const app1 = activatorRoot + "\\Database\\Equity.DemoData\\bin\\Debug\\Equity.DemoData.exe";
+        const args1 = ['-s', '-p', '-d', '-f=' + activatorRoot + '\\DemoData\\', '-n=local'];
         var child = spawn(app1, args1);
         child.stdout.on('data', function(msg){
           console.log(msg.toString())
@@ -41,7 +43,7 @@ exports.activator = function() {
         var child = spawn(app3, args3, {detached:true, stdio: 'ignore'}).unref();
         break;
       case "3":
-        const psCommand = "cd D:/Git/Equity/Tools; ./testing.ps1";
+        const psCommand = "cd " + activatorRoot + "/Tools; ./testing.ps1";
         var child = spawn("powershell.exe", [psCommand]);
         child.stdout.on("data", function(data){
           console.log("Powershell Data: " + data);
@@ -57,22 +59,22 @@ exports.activator = function() {
       case "4":
         request("http://localhost:4040/api/tunnels", { json: true }, (err, res, body) => {
           if (err) return console.log(err);
-          
+
           let httpsTunnel = body.tunnels[0].public_url;
           let httpTunnel = body.tunnels[1].public_url;
-          let command4 = "./CreateEventGridSubscriptions.base.ps1 " + 
+          let command4 = "./CreateEventGridSubscriptions.base.ps1 " +
             "-EndpointRoot \"" + httpsTunnel + "\" " +
-            "-SubscriptionNamePrefix \"JR-\" " + 
-            "-ResourceGroup \"Ottobase-General\" " + 
-            "-SubscriptionId \"e1f843ce-5bac-42bd-b3c2-a9ea02672dab\" " + 
-            "-TenantId \"1ddf5542-6a20-4020-bb72-0d757c795785\" " + 
+            "-SubscriptionNamePrefix \"" + initials + "-\" " +
+            "-ResourceGroup \"Ottobase-General\" " +
+            "-SubscriptionId \"e1f843ce-5bac-42bd-b3c2-a9ea02672dab\" " +
+            "-TenantId \"1ddf5542-6a20-4020-bb72-0d757c795785\" " +
             "-TopicName \"ma-dev-eventgridtopic\"";
-          fs.writeFile('D:/Git/Equity/Tools/testing.ps1', command4, function (err) {
+          fs.writeFile(activatorRoot + '/Tools/testing.ps1', command4, function (err) {
             if (err) console.log(err);
           });
         });
         break;
-      
+
       default:
         console.log('say what?');
     }
