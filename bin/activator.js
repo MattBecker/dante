@@ -11,9 +11,9 @@ exports.init = function() {
   console.log( "1: DemoData import (snapshot)" );
   console.log( "2: DemoData import (non snapshot)" );
   console.log( "3: DemoData export" );
-  console.log( "4: Run ngrok");
-  console.log( "5: Create Event Grid Webhooks");
-  console.log( "6: FixLocalPsFile");
+  console.log( "4: Start ngrok");
+  console.log( "5: Update event grid script");
+  console.log( "6: Create event grid");
 
   var activatorRoot = settings.get('activatorRoot');
   var initials = settings.get('initials');
@@ -54,30 +54,19 @@ exports.init = function() {
           });
           break;
       case "4":
-        const app4 = "ngrok";
+        var ngrokRoot = settings.get('ngrokRoot');
+        const app4 = ngrokRoot + "\\ngrok.exe";
         const args4 = ["http", "-host-header=rewrite", "local.activateotto.com:80"];
         var child = spawn(app4, args4, {detached:true, stdio: 'ignore'}).unref();
         break;
       case "5":
-        const psCommand = "cd " + activatorRoot + "/Tools; ./testing.ps1";
-        var child = spawn("powershell.exe", [psCommand]);
-        child.stdout.on("data", function(data){
-          console.log("Powershell Data: " + data);
-        });
-        child.stderr.on("data", function(data){
-          console.log("Powershell Errors: " + data);
-        });
-        child.on("exit",function(){
-          console.log("Powershell Script finished");
-        });
-        child.stdin.end(); //end input
-        break;
-      case "6":
         request("http://localhost:4040/api/tunnels", { json: true }, (err, res, body) => {
           if (err) return console.log(err);
 
-          let httpsTunnel = body.tunnels[0].public_url;
-          let httpTunnel = body.tunnels[1].public_url;
+          let tunnel1 = body.tunnels[1].public_url;
+          let tunnel2 = body.tunnels[0].public_url;
+
+          let httpsTunnel = tunnel1.indexOf('https') !== -1 ? tunnel1 : tunnel2;
           let command4 = "./CreateEventGridSubscriptions.base.ps1 " +
             "-EndpointRoot \"" + httpsTunnel + "\" " +
             "-SubscriptionNamePrefix \"" + initials + "-\" " +
@@ -85,11 +74,25 @@ exports.init = function() {
             "-SubscriptionId \"e1f843ce-5bac-42bd-b3c2-a9ea02672dab\" " +
             "-TenantId \"1ddf5542-6a20-4020-bb72-0d757c795785\" " +
             "-TopicName \"ma-dev-eventgridtopic\"";
-          fs.writeFile(activatorRoot + '/Tools/testing.ps1', command4, function (err) {
+          fs.writeFile(activatorRoot + '/Tools/CreateEventGridSubscriptions.local.ps1', command4, function (err) {
             if (err) console.log(err);
           });
         });
         break;
+      case "6":
+          const psCommand = "cd " + activatorRoot + "/Tools; ./CreateEventGridSubscriptions.local.ps1";
+          var child = spawn("powershell.exe", [psCommand]);
+          child.stdout.on("data", function(data){
+            console.log("Powershell Data: " + data);
+          });
+          child.stderr.on("data", function(data){
+            console.log("Powershell Errors: " + data);
+          });
+          child.on("exit",function(){
+            console.log("Powershell Script finished");
+          });
+          child.stdin.end(); //end input
+          break;
 
       default:
         console.log('say what?');
