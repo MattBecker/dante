@@ -4,7 +4,7 @@ const {
 } = require("child_process");
 inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
 
-exports.random = function() {
+exports.init = function() {
   console.log("I am random");
   console.log("1: IIS Reset");
   //console.log("0: Go back");

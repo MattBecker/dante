@@ -4,6 +4,7 @@ const inquirer = require('inquirer')
 const process = require("child_process");
 const activator = require('./activator');
 const random = require('./random');
+const docker = require('./docker');
 const chalk = require('chalk');
 
 inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
@@ -12,8 +13,9 @@ inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
 
 console.log(chalk.bgGreen("-".repeat(30) + "I am Dante" + "-".repeat(30)));
 console.log("1. Activator");
-console.log("2. EmailBuilder");
+//console.log("2. EmailBuilder");
 console.log("3. Random");
+console.log("4. Docker");
 //console.log("0. Exit");
 
 var questions = [{
@@ -30,10 +32,13 @@ inquirer.prompt(questions).then(answers => {
       console.log(chalk.gray('thanks for playing'));
       break;
     case "1":
-      activator.activator();
+      activator.init();
       break;
     case "3":
-      random.random();
+      random.init();
+      break;
+    case "4":
+      docker.init();
       break;
     default:
       console.log('say what?');

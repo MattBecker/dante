@@ -6,12 +6,14 @@ var settings = require('user-settings').file('.dante');
 
 inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
 
-exports.activator = function() {
+exports.init = function() {
   console.log("I am activator");
-  console.log( "1: Run DemoData" );
-  console.log( "2: Run ngrok");
-  console.log( "3: Create Event Grid Webhooks");
-  console.log( "4: FixLocalPsFile");
+  console.log( "1: DemoData import (snapshot)" );
+  console.log( "2: DemoData import (non snapshot)" );
+  console.log( "3: DemoData export" );
+  console.log( "4: Run ngrok");
+  console.log( "5: Create Event Grid Webhooks");
+  console.log( "6: FixLocalPsFile");
 
   var activatorRoot = settings.get('activatorRoot');
   var initials = settings.get('initials');
@@ -27,22 +29,36 @@ exports.activator = function() {
 
   inquirer.prompt(questions).then(answers => {
     var ans = answers['a1'];
+    const demoDataApp = activatorRoot + "\\Database\\Equity.DemoData\\bin\\Debug\\Equity.DemoData.exe";
 
     switch(ans) {
       case "1":
-        const app1 = activatorRoot + "\\Database\\Equity.DemoData\\bin\\Debug\\Equity.DemoData.exe";
         const args1 = ['-s', '-p', '-d', '-f=' + activatorRoot + '\\DemoData\\', '-n=local'];
-        var child = spawn(app1, args1);
+        var child = spawn(demoDataApp, args1);
         child.stdout.on('data', function(msg){
           console.log(msg.toString())
         });
         break;
       case "2":
-        const app3 = "ngrok";
-        const args3 = ["http", "-host-header=rewrite", "local.activateotto.com:80"];
-        var child = spawn(app3, args3, {detached:true, stdio: 'ignore'}).unref();
-        break;
+          const args2 = ['-p', '-d', '-f=' + activatorRoot + '\\DemoData\\', '-n=local'];
+          var child = spawn(demoDataApp, args2);
+          child.stdout.on('data', function(msg){
+            console.log(msg.toString())
+          });
+          break;
       case "3":
+          const args3 = ['-e', '-f=' + activatorRoot + '\\DemoData\\', '-n=local'];
+          var child = spawn(demoDataApp, args3);
+          child.stdout.on('data', function(msg){
+            console.log(msg.toString())
+          });
+          break;
+      case "4":
+        const app4 = "ngrok";
+        const args4 = ["http", "-host-header=rewrite", "local.activateotto.com:80"];
+        var child = spawn(app4, args4, {detached:true, stdio: 'ignore'}).unref();
+        break;
+      case "5":
         const psCommand = "cd " + activatorRoot + "/Tools; ./testing.ps1";
         var child = spawn("powershell.exe", [psCommand]);
         child.stdout.on("data", function(data){
@@ -56,7 +72,7 @@ exports.activator = function() {
         });
         child.stdin.end(); //end input
         break;
-      case "4":
+      case "6":
         request("http://localhost:4040/api/tunnels", { json: true }, (err, res, body) => {
           if (err) return console.log(err);
 
