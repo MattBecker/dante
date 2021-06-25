@@ -1,12 +1,14 @@
 const inquirer = require('inquirer')
 const {
-  spawn
+  spawn, spawnSync
 } = require("child_process");
+const chalk = require('chalk');
+
 inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
 
 exports.init = function() {
   console.log("I am random");
-  console.log("1: IIS Reset");
+  console.log("1: Restart IIS");
   //console.log("0: Go back");
 
   var questions = [{
@@ -21,10 +23,24 @@ exports.init = function() {
 
     switch (ans) {
       case "1":
-        var child = spawn('iisreset');
-        child.stdout.on('data', function(msg) {
-          console.log(msg.toString())
-        });
+        // var child = spawn('iisreset');
+        // child.stdout.on('data', function(msg) {
+        //   console.log(msg.toString())
+        // });
+
+        var childStop = spawnSync('net', ['stop', 'W3SVC']);
+        console.log(chalk.greenBright(`Stop: ${childStop.stdout}`));
+
+        if (childStop.stderr != '')
+          console.error(chalk.redBright(`Stop: stderr: ${childStop.stderr}`));
+
+
+        var childStart = spawnSync('net', ['start', 'W3SVC']);
+        console.log(chalk.greenBright(`Start: stdout: ${childStart.stdout}`));
+
+        if (childStart.stderr != '')
+          console.error(chalk.redBright(`Start: stderr: ${childStart.stderr}`));
+
         break;
       default:
         console.log('say what?');

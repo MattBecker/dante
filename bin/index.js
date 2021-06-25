@@ -12,7 +12,7 @@ inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
 
 // process.spawnSync('Clear-Host');
 
-console.log(chalk.bgYellow("-".repeat(30) + "I am Dante" + "-".repeat(30)));
+console.log(chalk.bgBlue("-".repeat(30) + "I am Dante" + "-".repeat(30)));
 console.log("1. Activator");
 console.log("2. EmailBuilder");
 console.log("3. Random");
