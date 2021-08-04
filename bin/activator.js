@@ -31,7 +31,7 @@ exports.init = function() {
 
     switch(ans) {
       case "1":
-        const args1 = ['-s', '-p', '-d', '-f=' + activatorRoot + '\\DemoData\\', '-n=local'];
+        const args1 = ['-a', '-p', '-d', '-f=' + activatorRoot + '\\DemoData\\', '-n=local'];
         var child = spawn(demoDataApp, args1);
         child.stdout.on('data', function(msg){
           console.log(msg.toString())
@@ -58,7 +58,7 @@ exports.init = function() {
             let tunnel2 = body.tunnels[0].public_url;
             let httpsTunnel = tunnel1.indexOf('https') !== -1 ? tunnel1 : tunnel2;
             createPsFile(activatorRoot, httpsTunnel, initials);
-            
+
             const psCommand = "cd " + activatorRoot + "/Tools; ./CreateEventGridSubscriptions.local.ps1";
             runPsCommand(psCommand);
           };
@@ -66,7 +66,7 @@ exports.init = function() {
             console.log("Looks like nGrok is not running... Running it now.");
             runNgrok();
             console.log("Waiting for 60 seconds...");
-          
+
             setTimeout(() => {
               requestJson(apiUrl, successFunc, () => console.log("Failed"));
             }, 60000);
@@ -82,12 +82,12 @@ exports.init = function() {
 
 var createPsFile = function(activatorRoot, httpsTunnel, initials){
   console.log("Creating PS file...");
-  let command = "./CreateEventGridSubscriptions.base.ps1 " + 
+  let command = "./CreateEventGridSubscriptions.base.ps1 " +
                 "-EndpointRoot \"" + httpsTunnel + "\" " +
-                "-SubscriptionNamePrefix \"" + initials + "-\" " + 
-                "-ResourceGroup \"Ottobase-General\" " + 
-                "-SubscriptionId \"e1f843ce-5bac-42bd-b3c2-a9ea02672dab\" " + 
-                "-TenantId \"1ddf5542-6a20-4020-bb72-0d757c795785\" " + 
+                "-SubscriptionNamePrefix \"" + initials + "-\" " +
+                "-ResourceGroup \"Ottobase-General\" " +
+                "-SubscriptionId \"e1f843ce-5bac-42bd-b3c2-a9ea02672dab\" " +
+                "-TenantId \"1ddf5542-6a20-4020-bb72-0d757c795785\" " +
                 "-TopicName \"ma-dev-eventgridtopic\"";
   fs.writeFile(activatorRoot + '/Tools/CreateEventGridSubscriptions.local.ps1', command, function (err) {
     if (err) console.log("Error creating file: ", err);
