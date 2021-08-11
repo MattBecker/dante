@@ -66,6 +66,7 @@ exports.init = function() {
             console.log("Looks like nGrok is not running... Running it now.");
             runNgrok();
             console.log("Waiting for 60 seconds...");
+            runPsCommand("Connect-AzureRmAccount");
 
             setTimeout(() => {
               requestJson(apiUrl, successFunc, () => console.log("Failed"));
