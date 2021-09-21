@@ -86,8 +86,8 @@ var createPsFile = function(activatorRoot, httpsTunnel, initials){
   let command = "./CreateEventGridSubscriptions.base.ps1 " +
                 "-EndpointRoot \"" + httpsTunnel + "\" " +
                 "-SubscriptionNamePrefix \"" + initials + "-\" " +
-                "-ResourceGroup \"Ottobase-General\" " +
-                "-SubscriptionId \"e1f843ce-5bac-42bd-b3c2-a9ea02672dab\" " +
+                "-ResourceGroup \"EventGrid-MA-Dev\" " +
+                "-SubscriptionId \"b034717d-3141-468c-af5d-66dc8db97935\" " +
                 "-TenantId \"1ddf5542-6a20-4020-bb72-0d757c795785\" " +
                 "-TopicName \"ma-dev-eventgridtopic\"";
   fs.writeFile(activatorRoot + '/Tools/CreateEventGridSubscriptions.local.ps1', command, function (err) {
