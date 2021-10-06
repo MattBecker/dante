@@ -8,7 +8,7 @@ inquirer.registerPrompt('autosubmit', require('inquirer-autosubmit-prompt'));
 
 exports.init = function() {
   console.log("I am activator");
-  console.log( "1: DemoData import (snapshot)" );
+  console.log( "1: DemoData import (Azure snapshot)" );
   console.log( "2: DemoData import (non snapshot)" );
   console.log( "3: DemoData export" );
   console.log( "4: Setup event grid");
@@ -31,7 +31,7 @@ exports.init = function() {
 
     switch(ans) {
       case "1":
-        const args1 = ['-a', '-p', '-d', '-f=' + activatorRoot + '\\DemoData\\', '-n=local'];
+        const args1 = ['-a', '-p', '-d', '-t', '-f=' + activatorRoot + '\\DemoData\\', '-n=local'];
         var child = spawn(demoDataApp, args1);
         child.stdout.on('data', function(msg){
           console.log(msg.toString())
